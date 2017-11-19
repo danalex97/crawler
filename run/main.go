@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-  c := crawler.NewCrawler()
+  c := crawler.NewCrawler("http:://tomblomfield.com")
   c.Run()
 }
