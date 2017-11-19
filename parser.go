@@ -7,6 +7,7 @@ import (
 )
 
 type parser struct {
+  url    string
   reader io.Reader
 }
 
@@ -21,13 +22,12 @@ func getElement(token html.Token, element string) (ok bool, href string) {
   return
 }
 
-func (p *parser) parse() (*page, error) {
-  tokenizer := html.NewTokenizer(p.reader)
+func getUrls(tokenizer *html.Tokenizer) (urls []string) {
   for {
     token := tokenizer.Next()
     switch {
     case token == html.ErrorToken:
-      return nil, nil
+      return
     case token == html.StartTagToken:
       token := tokenizer.Token()
 
@@ -35,17 +35,29 @@ func (p *parser) parse() (*page, error) {
       if token.Data == "a" {
         ok, url := getElement(token, "href")
         if ok {
-          // Found new url
-          fmt.Printf("New url found %v\n", url)
+          urls = append(urls, url)
         }
       }
     }
   }
+}
+
+func (p *parser) parse() (*page, error) {
+  tokenizer := html.NewTokenizer(p.reader)
+  urls      := getUrls(tokenizer)
+
+  for _, url := range urls {
+    fmt.Printf("New url found %v\n", url)
+  }
+
   return nil, nil
 }
 
-func newParser(reader io.Reader) *parser {
+func newParser(url string, reader io.Reader) *parser {
   p := new(parser)
+
+  p.url    = url
   p.reader = reader
+
   return p
 }

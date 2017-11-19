@@ -24,6 +24,6 @@ func (f *fetcher) fetch() (*page, error) {
     return nil, err;
   }
 
-  parser := newParser(resp.Body)
+  parser := newParser(f.url, resp.Body)
   return parser.parse()
 }
