@@ -1,6 +1,7 @@
 package crawler
 
 import (
+  "fmt";
   "net/http"
 )
 
@@ -21,6 +22,8 @@ func newFetcher(url string, sitemap *sitemap) *fetcher {
 }
 
 func (f *fetcher) fetch() (*page, error) {
+  fmt.Println("Fetching page", f.url)
+
   resp, err := f.client.Get(f.url)
   if err != nil {
     return nil, err;
@@ -33,6 +36,7 @@ func (f *fetcher) fetch() (*page, error) {
   for _, ref := range urls {
     page.addLink(f.sitemap.getPage(ref))
   }
+  page.setParsed()
 
   return page, nil
 }

@@ -2,8 +2,7 @@ package crawler
 
 import (
   "golang.org/x/net/html";
-  "io";
-  "fmt"
+  "io"
 )
 
 type parser struct {
@@ -45,10 +44,6 @@ func getUrls(tokenizer *html.Tokenizer) (urls []string) {
 func (p *parser) parse() []string {
   tokenizer := html.NewTokenizer(p.reader)
   urls      := getUrls(tokenizer)
-
-  for _, url := range urls {
-    fmt.Printf("Url found: %v\n", url)
-  }
 
   return urls
 }

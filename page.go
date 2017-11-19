@@ -19,3 +19,15 @@ func newPage(url string) *page {
 func (p *page) addLink(link *page) {
   p.links[link.url] = link
 }
+
+func (p *page) setParsed() {
+  p.parsed = true
+}
+
+func (p *page) getParsed() bool {
+  return p.parsed
+}
+
+func (p *page) getUrl() string {
+  return p.url
+}

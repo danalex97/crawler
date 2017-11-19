@@ -19,7 +19,17 @@ func (m *sitemap) newSite(page *page) {
 func (m *sitemap) getPage(url string) *page {
   page, exists := m.pages[url]
   if !exists {
-    return newPage(url)
+    m.pages[url] = newPage(url)
+    return m.pages[url]
   }
   return page
+}
+
+func (m *sitemap) getUnparsedPages() (pages []*page) {
+  for _, page := range m.pages {
+    if !page.getParsed() {
+      pages = append(pages, page)
+    }
+  }
+  return
 }
