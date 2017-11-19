@@ -1,8 +1,9 @@
 package crawler
 
 type page struct {
-  url string
-  links map[string]* page
+  url    string
+  parsed bool
+  links  map[string]* page
 }
 
 func newPage(url string) *page {
@@ -10,6 +11,7 @@ func newPage(url string) *page {
 
   p.url   = url
   p.links = make(map[string] *page)
+  p.parsed = false
 
   return p
 }

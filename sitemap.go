@@ -15,3 +15,11 @@ func newSitemap() (* sitemap) {
 func (m *sitemap) newSite(page *page) {
   m.pages[page.url] = page
 }
+
+func (m *sitemap) getPage(url string) *page {
+  page, exists := m.pages[url]
+  if !exists {
+    return newPage(url)
+  }
+  return page
+}

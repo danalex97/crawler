@@ -42,15 +42,15 @@ func getUrls(tokenizer *html.Tokenizer) (urls []string) {
   }
 }
 
-func (p *parser) parse() (*page, error) {
+func (p *parser) parse() []string {
   tokenizer := html.NewTokenizer(p.reader)
   urls      := getUrls(tokenizer)
 
   for _, url := range urls {
-    fmt.Printf("New url found %v\n", url)
+    fmt.Printf("Url found: %v\n", url)
   }
 
-  return nil, nil
+  return urls
 }
 
 func newParser(url string, reader io.Reader) *parser {

@@ -7,6 +7,7 @@ import (
 type fetcher struct {
   url     string
   sitemap *sitemap
+  client  *http.Client
 }
 
 func newFetcher(url string, sitemap *sitemap) *fetcher {
@@ -14,16 +15,24 @@ func newFetcher(url string, sitemap *sitemap) *fetcher {
 
   c.url     = url
   c.sitemap = sitemap
+  c.client  = &http.Client{}
 
   return c
 }
 
 func (f *fetcher) fetch() (*page, error) {
-  resp, err := http.Get(f.url)
+  resp, err := f.client.Get(f.url)
   if err != nil {
     return nil, err;
   }
 
   parser := newParser(f.url, resp.Body)
-  return parser.parse()
+  urls   := parser.parse()
+
+  page := f.sitemap.getPage(f.url)
+  for _, ref := range urls {
+    page.addLink(f.sitemap.getPage(ref))
+  }
+
+  return page, nil
 }
