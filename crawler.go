@@ -19,5 +19,8 @@ func NewCrawler(domain string) *Crawler {
 }
 
 func (c *Crawler) Run() error {
+  for _, fetcher := range c.fetchers {
+    fetcher.fetch()
+  }
   return nil
 }

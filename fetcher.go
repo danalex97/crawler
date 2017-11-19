@@ -1,5 +1,9 @@
 package crawler
 
+import (
+  "net/http"
+)
+
 type fetcher struct {
   url     string
   sitemap *sitemap
@@ -14,6 +18,12 @@ func newFetcher(url string, sitemap *sitemap) *fetcher {
   return c
 }
 
-func (f *fetcher) fetch() *page {
-  return nil
+func (f *fetcher) fetch() (*page, error) {
+  resp, err := http.Get(f.url)
+  if err != nil {
+    return nil, err;
+  }
+
+  parser := newParser(resp.Body)
+  return parser.parse()
 }
