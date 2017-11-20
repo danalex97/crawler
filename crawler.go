@@ -2,6 +2,7 @@ package crawler
 
 import (
   "strings"
+  "fmt"
 )
 
 type Crawler struct {
@@ -33,9 +34,19 @@ func (c *Crawler) filterPages(pages []*page) (urls []string) {
 
 func (c *Crawler) Run() error {
   for {
-    for _, fetcher := range c.fetchers {
-      fetcher.fetch()
+    done := make(chan bool)
+    for _, currFetcher := range c.fetchers {
+      go func(currFetcher *fetcher) {
+        currFetcher.fetch()
+        done <- true
+      } (currFetcher)
     }
+
+    for _, i := range c.fetchers {
+      _ = i
+      <- done
+    }
+
     c.fetchers = make([]*fetcher, 0)
 
     c.sitemap.Lock()
@@ -46,6 +57,7 @@ func (c *Crawler) Run() error {
     c.sitemap.Unlock()
 
     if (len(urls) == 0) {
+      fmt.Println("Done crawling successfully.")
       return nil
     }
   }
