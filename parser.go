@@ -1,7 +1,7 @@
 package crawler
 
 import (
-  "golang.org/x/net/html";
+  "golang.org/x/net/html"
   "io"
 )
 
@@ -21,7 +21,8 @@ func getElement(token html.Token, element string) (ok bool, href string) {
   return
 }
 
-func getUrls(tokenizer *html.Tokenizer) (urls []string) {
+func (p *parser) parse() (urls []string) {
+  tokenizer := html.NewTokenizer(p.reader)
   for {
     token := tokenizer.Next()
     switch {
@@ -39,13 +40,6 @@ func getUrls(tokenizer *html.Tokenizer) (urls []string) {
       }
     }
   }
-}
-
-func (p *parser) parse() []string {
-  tokenizer := html.NewTokenizer(p.reader)
-  urls      := getUrls(tokenizer)
-
-  return urls
 }
 
 func newParser(url string, reader io.Reader) *parser {

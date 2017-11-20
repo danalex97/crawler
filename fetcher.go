@@ -1,7 +1,7 @@
 package crawler
 
 import (
-  "fmt";
+  "fmt"
   "net/http"
 )
 

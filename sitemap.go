@@ -12,7 +12,7 @@ func newSitemap() (* sitemap) {
   return m
 }
 
-func (m *sitemap) newSite(page *page) {
+func (m *sitemap) addPage(page *page) {
   m.pages[page.url] = page
 }
 
