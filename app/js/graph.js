@@ -49,6 +49,7 @@ function getTopologyInfo() {
         }
       });
 
+      d3.select("svg").remove();
 
       let height = 800;
       let width = 1278;

@@ -13,10 +13,16 @@
     <script src="js/graph.js"></script>
     <script>
         window.jQuery = window.$ = require('jquery');
-        setTimeout(function() {
-          document.getElementById("loader").style.display = "none";
+        initial_style = Object.assign({}, document.getElementById("loader"));
+        (function runForever(){
+          console.log("Update topology.");
+          document.getElementById("loader").style = Object.assign({}, initial_style);
+          setTimeout(function() {
+            document.getElementById("loader").style.visibility = "hidden";
+          }, 2000);
           getTopologyInfo();
-        }, 2000);
+          setTimeout(runForever, 30000)
+        })();
     </script>
 </body>
 </html>
