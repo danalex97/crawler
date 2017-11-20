@@ -3,7 +3,6 @@ package crawler
 import (
   "encoding/json"
   "sync"
-  "strings"
 )
 
 type sitemap struct {
@@ -26,9 +25,6 @@ func (m *sitemap) addPage(page *page) {
 }
 
 func (m *sitemap) getPage(url string) *page {
-  if !strings.HasPrefix(url, m.domain) {
-    return nil
-  }
   page, exists := m.pages[url]
   if !exists {
     m.pages[url] = newPage(url)
