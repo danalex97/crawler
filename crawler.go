@@ -2,6 +2,7 @@ package crawler
 
 import (
   "fmt"
+  "net/http"
 )
 
 type Crawler struct {
@@ -16,7 +17,7 @@ func NewCrawler(domain string) *Crawler {
   c.domain   = domain
   c.fetchers = make([]fetcher, 0)
   c.sitemap  = newSitemap(domain)
-  c.fetchers = append(c.fetchers, newHttpFetcher(domain))
+  c.fetchers = append(c.fetchers, newHttpFetcher(domain, http.Client{}))
 
   return c
 }
@@ -66,7 +67,7 @@ func (c *Crawler) updateFetchers(buildingChannel chan []string) {
 
   c.fetchers = []fetcher{}
   for url, _ := range(uniqueUrls) {
-    c.fetchers = append(c.fetchers, newHttpFetcher(url))
+    c.fetchers = append(c.fetchers, newHttpFetcher(url, http.Client{}))
   }
 }
 

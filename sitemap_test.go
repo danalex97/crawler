@@ -27,7 +27,8 @@ func TestGetUnparsedPages(t *testing.T) {
   page1 := sitemap.getPage("test")
   page2 := sitemap.getPage("test2")
 
-  assert.Equal(t, sitemap.getUnparsedPages(), []*page{page1, page2})
+  assert.Subset(t, sitemap.getUnparsedPages(), []*page{page1, page2})
+	assert.Subset(t, []*page{page1, page2}, sitemap.getUnparsedPages())
   page1.setParsed()
   assert.Equal(t, sitemap.getUnparsedPages(), []*page{page2})
   page2.setParsed()
