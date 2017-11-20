@@ -20,6 +20,14 @@ func (p *page) addLink(link *page) {
   p.links[link.url] = link
 }
 
+func (p *page) getLinks() ([]*page) {
+  pages := []*page {}
+  for _, page := range p.links {
+    pages = append(pages, page)
+  }
+  return pages
+}
+
 func (p *page) setParsed() {
   p.parsed = true
 }
