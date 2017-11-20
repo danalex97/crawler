@@ -41,15 +41,14 @@ func (m *sitemap) getUnparsedPages() (pages []*page) {
 }
 
 func (m *sitemap) toJson() string {
-  links := []string{}
+  links := []map[string]string{}
   for _, x := range m.pages {
     for _, y := range x.getLinks() {
       link := map[string]string{
         "source": x.getUrl(),
         "target": y.getUrl(),
       }
-      serialized, _ := json.Marshal(link)
-      links = append(links, string(serialized))
+      links = append(links, link)
     }
   }
   ans, _ := json.Marshal(links)

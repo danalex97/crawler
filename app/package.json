@@ -1,0 +1,28 @@
+{
+  "name": "crawler-display",
+  "version": "1.0.0",
+  "main": "./main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "keywords": [
+    "attack",
+    "graphs",
+    "cybersecurity"
+  ],
+  "author": "Alexandru Dan",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13"
+  },
+  "dependencies": {
+    "d3-tip": "^0.7.1",
+    "electron-prebuilt": "^1.4.13",
+    "jquery": "^3.2.1",
+    "load-json-file": "^3.0.0"
+  }
+}

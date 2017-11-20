@@ -44,6 +44,10 @@ func (c *Crawler) Run() error {
       c.fetchers = append(c.fetchers, newFetcher(url, c.sitemap))
     }
     c.sitemap.Unlock()
+
+    if (len(urls) == 0) {
+      return nil
+    }
   }
   return nil
 }
