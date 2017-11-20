@@ -56,7 +56,7 @@ function getTopologyInfo() {
       var color = d3.scale.category20();
 
       let force = d3.layout.force()
-          .linkDistance(500)
+          .linkDistance(400)
           //.linkStrength(30)
           .size([width, height]);
 

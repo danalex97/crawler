@@ -16,7 +16,7 @@ func NewCrawler(domain string) *Crawler {
 
   c.domain   = domain
   c.fetchers = make([]*fetcher, 0)
-  c.sitemap  = newSitemap()
+  c.sitemap  = newSitemap(domain)
 
   c.fetchers = append(c.fetchers, newFetcher(domain, c.sitemap))
   return c
@@ -50,9 +50,9 @@ func (c *Crawler) Run() error {
     c.fetchers = make([]*fetcher, 0)
 
     c.sitemap.Lock()
-    urls := c.filterPages(c.sitemap.getUnparsedPages())
-    for _, url := range urls {
-      c.fetchers = append(c.fetchers, newFetcher(url, c.sitemap))
+    urls := c.sitemap.getUnparsedPages()
+    for _, page := range urls {
+      c.fetchers = append(c.fetchers, newFetcher(page.getUrl(), c.sitemap))
     }
     c.sitemap.Unlock()
 

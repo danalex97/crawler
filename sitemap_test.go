@@ -6,7 +6,7 @@ import (
 )
 
 func TestCanAddNewPage(t *testing.T) {
-  sitemap := newSitemap()
+  sitemap := newSitemap("test")
   page1   := newPage("test")
   page2   := newPage("test2")
 
@@ -17,13 +17,13 @@ func TestCanAddNewPage(t *testing.T) {
 }
 
 func TestGetPageCreatesNewUnparsedPages(t *testing.T) {
-  sitemap := newSitemap()
+  sitemap := newSitemap("test")
   assert.Equal(t, sitemap.getPage("test").getUrl(), "test")
   assert.Equal(t, sitemap.getPage("test2").getUrl(), "test2")
 }
 
 func TestGetUnparsedPages(t *testing.T) {
-  sitemap := newSitemap()
+  sitemap := newSitemap("test")
   page1 := sitemap.getPage("test")
   page2 := sitemap.getPage("test2")
 

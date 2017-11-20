@@ -1,19 +1,22 @@
 package crawler
 
 import (
-  "encoding/json";
+  "encoding/json"
   "sync"
+  "strings"
 )
 
 type sitemap struct {
-  pages map[string]* page
+  domain string
+  pages  map[string]* page
   sync.Mutex
 }
 
-func newSitemap() (* sitemap) {
+func newSitemap(domain string) (* sitemap) {
   m := new(sitemap)
 
-  m.pages = make(map[string] *page)
+  m.pages  = make(map[string] *page)
+  m.domain = domain
 
   return m
 }
@@ -23,6 +26,9 @@ func (m *sitemap) addPage(page *page) {
 }
 
 func (m *sitemap) getPage(url string) *page {
+  if !strings.HasPrefix(url, m.domain) {
+    return nil
+  }
   page, exists := m.pages[url]
   if !exists {
     m.pages[url] = newPage(url)

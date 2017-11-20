@@ -35,7 +35,10 @@ func (f *fetcher) fetch() (*page, error) {
   f.sitemap.Lock()
   page := f.sitemap.getPage(f.url)
   for _, ref := range urls {
-    page.addLink(f.sitemap.getPage(ref))
+    target := f.sitemap.getPage(ref)
+    if target != nil {
+      page.addLink(target)
+    }
   }
   page.setParsed()
   f.sitemap.Unlock()
