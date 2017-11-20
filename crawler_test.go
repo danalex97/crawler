@@ -59,3 +59,15 @@ func TestBuildPagesBuildsAPageAndFiltersItsLinks(t *testing.T) {
 
   assert.Equal(t, page1.getLinks(), []*page{page2})
 }
+
+func TestUpdateFetchersCratesTheCorrectNumberOfFetchers(t *testing.T) {
+  crawler := testCrawler()
+
+  buildingChannel := make(chan []string, 3)
+  buildingChannel <- []string {"url1", "url2"}
+  buildingChannel <- []string {"url1", "url3", "url7"}
+  buildingChannel <- []string {"url3", "url2", "url8"}
+
+  crawler.updateFetchers(buildingChannel)
+  assert.Equal(t, len(crawler.fetchers), 5)
+}
