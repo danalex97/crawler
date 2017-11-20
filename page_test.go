@@ -28,7 +28,8 @@ func TestCanAddLinks(t *testing.T) {
 
   page1.addLink(page3)
   assert.Equal(t, len(page1.getLinks()), 2)
-  assert.Equal(t, page1.getLinks(), []*page{page2, page3})
+  assert.Subset(t, page1.getLinks(), []*page{page2, page3})
+  assert.Subset(t, []*page{page2, page3}, page1.getLinks())
 }
 
 func TestSetParsedModifiesParsed(t *testing.T) {

@@ -1,7 +1,7 @@
 package crawler
 
 import (
-  "strings"
+  "fmt"
 )
 
 type Crawler struct {
@@ -16,19 +16,9 @@ func NewCrawler(domain string) *Crawler {
   c.domain   = domain
   c.fetchers = make([]*fetcher, 0)
   c.sitemap  = newSitemap(domain)
-
   c.fetchers = append(c.fetchers, newFetcher(domain))
-  return c
-}
 
-func (c *Crawler) filterPages(pages []*page) (urls []string) {
-  for _, page := range pages {
-    url := page.getUrl()
-    if strings.HasPrefix(url, c.domain) {
-      urls = append(urls, url)
-    }
-  }
-  return
+  return c
 }
 
 func (c *Crawler) Run() error {
@@ -40,7 +30,8 @@ func (c *Crawler) Run() error {
       } (currFetcher)
     }
 
-    lenFetchers := len(c.fetchers)
+    buildingChannel := make(chan []string)
+    lenFetchers     := len(c.fetchers)
     for i := 0; i < lenFetchers; i++ {
       data           := <- fetchingChannel
       url, urls, err := fromFetchedData(data)
@@ -49,28 +40,30 @@ func (c *Crawler) Run() error {
         continue
       }
 
-      c.sitemap.Lock()
-      page := c.sitemap.getPage(url)
-      if page == nil {
-        c.sitemap.Unlock()
-        continue
-      }
-      for _, ref := range urls {
-        target := c.sitemap.getPage(ref)
-        if target != nil {
-          page.addLink(target)
+      go func() {
+        builder := newBuilder(c.domain, c.sitemap)
+        buildingChannel <- builder.buildPage(url, builder.filterPages(urls))
+      } ()
+    }
+
+    uniqueUrls := map[string]struct{}{}
+    for i := 0; i < lenFetchers; i++ {
+      urls := <-buildingChannel
+      for _, url := range urls {
+        if _, ok := uniqueUrls[url]; !ok {
+          uniqueUrls[url] = struct{}{}
         }
       }
-      page.setParsed()
-      c.sitemap.Unlock()
+    }
 
-      c.fetchers = make([]*fetcher, 0)
+    c.fetchers = []*fetcher{}
+    for url, _ := range(uniqueUrls) {
+      c.fetchers = append(c.fetchers, newFetcher(url))
+    }
 
-      c.sitemap.Lock()
-      for _, url := range urls {
-        c.fetchers = append(c.fetchers, newFetcher(url))
-      }
-      c.sitemap.Unlock()
+    if len(c.fetchers) == 0 {
+      fmt.Println("No more links found")
+      return nil
     }
   }
   return nil

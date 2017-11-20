@@ -12,10 +12,8 @@ type fetcher struct {
 
 func newFetcher(url string) *fetcher {
   c := new(fetcher)
-
   c.url     = url
   c.client  = &http.Client{}
-
   return c
 }
 
