@@ -2,7 +2,6 @@ package crawler
 
 import (
   "strings"
-  "fmt"
 )
 
 type Crawler struct {
@@ -18,7 +17,7 @@ func NewCrawler(domain string) *Crawler {
   c.fetchers = make([]*fetcher, 0)
   c.sitemap  = newSitemap(domain)
 
-  c.fetchers = append(c.fetchers, newFetcher(domain, c.sitemap))
+  c.fetchers = append(c.fetchers, newFetcher(domain))
   return c
 }
 
@@ -34,31 +33,44 @@ func (c *Crawler) filterPages(pages []*page) (urls []string) {
 
 func (c *Crawler) Run() error {
   for {
-    done := make(chan bool)
+    fetchingChannel := make(chan fetchedData)
     for _, currFetcher := range c.fetchers {
       go func(currFetcher *fetcher) {
-        currFetcher.fetch()
-        done <- true
+        fetchingChannel <- currFetcher.fetch()
       } (currFetcher)
     }
 
-    for _, i := range c.fetchers {
-      _ = i
-      <- done
-    }
+    lenFetchers := len(c.fetchers)
+    for i := 0; i < lenFetchers; i++ {
+      data           := <- fetchingChannel
+      url, urls, err := fromFetchedData(data)
 
-    c.fetchers = make([]*fetcher, 0)
+      if err != nil {
+        continue
+      }
 
-    c.sitemap.Lock()
-    urls := c.sitemap.getUnparsedPages()
-    for _, page := range urls {
-      c.fetchers = append(c.fetchers, newFetcher(page.getUrl(), c.sitemap))
-    }
-    c.sitemap.Unlock()
+      c.sitemap.Lock()
+      page := c.sitemap.getPage(url)
+      if page == nil {
+        c.sitemap.Unlock()
+        continue
+      }
+      for _, ref := range urls {
+        target := c.sitemap.getPage(ref)
+        if target != nil {
+          page.addLink(target)
+        }
+      }
+      page.setParsed()
+      c.sitemap.Unlock()
 
-    if (len(urls) == 0) {
-      fmt.Println("Done crawling successfully.")
-      return nil
+      c.fetchers = make([]*fetcher, 0)
+
+      c.sitemap.Lock()
+      for _, url := range urls {
+        c.fetchers = append(c.fetchers, newFetcher(url))
+      }
+      c.sitemap.Unlock()
     }
   }
   return nil
