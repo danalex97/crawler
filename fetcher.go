@@ -32,11 +32,13 @@ func (f *fetcher) fetch() (*page, error) {
   parser := newParser(f.url, resp.Body)
   urls   := parser.parse()
 
+  f.sitemap.Lock()
   page := f.sitemap.getPage(f.url)
   for _, ref := range urls {
     page.addLink(f.sitemap.getPage(ref))
   }
   page.setParsed()
+  f.sitemap.Unlock()
 
   return page, nil
 }

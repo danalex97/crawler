@@ -6,5 +6,8 @@ import (
 
 func main() {
   c := crawler.NewCrawler("http://tomblomfield.com/")
-  c.Run()
+  s := crawler.NewServer(c)
+
+  go c.Run()
+  s.ServerListenPathPort("/", 8080)
 }

@@ -1,7 +1,13 @@
 package crawler
 
+import (
+  "encoding/json";
+  "sync"
+)
+
 type sitemap struct {
-  pages map[string]* page;
+  pages map[string]* page
+  sync.Mutex
 }
 
 func newSitemap() (* sitemap) {
@@ -32,4 +38,20 @@ func (m *sitemap) getUnparsedPages() (pages []*page) {
     }
   }
   return
+}
+
+func (m *sitemap) toJson() string {
+  links := []string{}
+  for _, x := range m.pages {
+    for _, y := range x.getLinks() {
+      link := map[string]string{
+        "source": x.getUrl(),
+        "target": y.getUrl(),
+      }
+      serialized, _ := json.Marshal(link)
+      links = append(links, string(serialized))
+    }
+  }
+  ans, _ := json.Marshal(links)
+  return string(ans)
 }

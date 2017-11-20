@@ -38,10 +38,12 @@ func (c *Crawler) Run() error {
     }
     c.fetchers = make([]*fetcher, 0)
 
+    c.sitemap.Lock()
     urls := c.filterPages(c.sitemap.getUnparsedPages())
     for _, url := range urls {
       c.fetchers = append(c.fetchers, newFetcher(url, c.sitemap))
     }
+    c.sitemap.Unlock()
   }
   return nil
 }
