@@ -21,6 +21,12 @@ func getElement(token html.Token, element string) (ok bool, href string) {
   return
 }
 
+/* The Parser receives a Reader stream and tokenizes the input.
+   When we arrive at a tag token, if the element is <a>, we retrieve the
+   "href" attribute key.
+
+   This can be extended to processing static resources or other tags.
+ */
 func (p *parser) parse() (urls []string) {
   tokenizer := html.NewTokenizer(p.reader)
   for {

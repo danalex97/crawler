@@ -1,5 +1,6 @@
 package crawler
 
+/* The fetched data is what arrives from a fetcher. */
 type fetchedData struct {
   url  string
   urls []string

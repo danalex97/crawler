@@ -5,6 +5,10 @@ import (
   "sync"
 )
 
+/* The sitemap holds the state of the parsed pages.
+
+   It has no internal synchronization, so to use it we need external
+   synchronization. */
 type sitemap struct {
   domain string
   pages  map[string]* page
@@ -42,6 +46,8 @@ func (m *sitemap) getUnparsedPages() (pages []*page) {
   return
 }
 
+/* The toJson function is used to expose the API to the exterior using the
+   server implementation.*/
 func (m *sitemap) toJson() string {
   links := []map[string]string{}
   for _, x := range m.pages {

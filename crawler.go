@@ -23,6 +23,7 @@ func NewCrawler(domain string) *Crawler {
 }
 
 func (c *Crawler) fetchPages() chan fetchedData {
+  // Calls fetch for each Fetcher and pipes the resulting data into a channel
   fetchingChannel := make(chan fetchedData)
   for _, currFetcher := range c.fetchers {
     go func(currFetcher fetcher) {
@@ -33,6 +34,9 @@ func (c *Crawler) fetchPages() chan fetchedData {
 }
 
 func (c *Crawler) buildPages(fetchingChannel chan fetchedData) chan []string {
+  /* Gets the data from fetchers (see data.go), filteres it and builds
+     all the correspoing pages. It resturns a channel with all the new urls.
+     The new urls will be put in buildingChannel for further processing. */
   buildingChannel := make(chan []string)
   lenFetchers     := len(c.fetchers)
 
@@ -53,6 +57,7 @@ func (c *Crawler) buildPages(fetchingChannel chan fetchedData) chan []string {
 }
 
 func (c *Crawler) updateFetchers(buildingChannel chan []string) {
+  // Creates a new list of fetchers from all unique newly available urls.
   uniqueUrls  := map[string]struct{}{}
   lenFetchers := len(c.fetchers)
 

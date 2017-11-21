@@ -5,6 +5,40 @@ import (
   "github.com/stretchr/testify/assert"
 )
 
+func TestFilterPagesElimiatesTrailingHashtags(t *testing.T) {
+  sitemap := newSitemap("test")
+  builder := newBuilder("test", sitemap)
+
+  pages := []string{
+    "test/p1#test",
+    "test/p2",
+    "test/p4#what",
+  }
+
+  assert.Equal(t, builder.filterPages(pages), []string{
+    "test/p1",
+    "test/p2",
+    "test/p4",
+  })
+}
+
+func TestFilterPagesAddesPrefixForLocalLinks(t *testing.T) {
+  sitemap := newSitemap("test")
+  builder := newBuilder("test", sitemap)
+
+  pages := []string{
+    "/p1#test",
+    "test/p2",
+    "/p4#what",
+  }
+
+  assert.Equal(t, builder.filterPages(pages), []string{
+    "test/p1",
+    "test/p2",
+    "test/p4",
+  })
+}
+
 func TestFilterPagesFilteresPagesOutsideDomain(t *testing.T) {
   sitemap := newSitemap("test")
   builder := newBuilder("test", sitemap)

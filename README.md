@@ -13,6 +13,17 @@ To install the application run:
 chmod +x install.sh
 ./install.sh
 ```
+If any dependency is missing run:`go get <package>`
+
+#### Testing
+The test suite uses 2 packages: (these are included in the install script)
+ * gopkg.in/h2non/gock.v1
+ * github.com/stretchr/testify/assert
+
+To run the test suite, run:
+```
+go test
+```
 
 #### Usage
 To use the application you need to do:

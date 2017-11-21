@@ -9,6 +9,9 @@ type fetcher interface {
   fetch() fetchedData
 }
 
+/* An http fetcher is a fetecher that uses and HTTP client to fetch data from
+  a specific url. The fetcher does a GET at a specific url and resturns all
+  the links found inside the page if the request was sucessful. */
 type httpFetcher struct {
   url     string
   client  http.Client
@@ -29,6 +32,7 @@ func (f *httpFetcher) fetch() fetchedData {
     return toFetchedData(f.url, []string{}, err)
   }
 
+  // Even though resp.Body returns a ReadCloser, we can cast it to Reader
   parser := newParser(f.url, resp.Body)
   urls   := parser.parse()
 
