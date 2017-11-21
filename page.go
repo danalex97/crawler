@@ -20,6 +20,9 @@ func newPage(url string) *page {
   return p
 }
 
+/*
+  An asset is a <link>, <img> or <script> element
+*/
 func (p *page) addAssets(assets []string) {
   for _, asset := range assets{
     p.assets = append(p.assets, asset)

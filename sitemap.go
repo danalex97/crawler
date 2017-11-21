@@ -47,7 +47,8 @@ func (m *sitemap) getUnparsedPages() (pages []*page) {
 }
 
 /* The toJson function is used to expose the API to the exterior using the
-   server implementation.*/
+   server implementation. -- this should be split in more methods if more
+   dependencies appear */
 func (m *sitemap) toJson() string {
   links := []map[string]string{}
   for _, x := range m.pages {
