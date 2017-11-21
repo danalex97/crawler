@@ -1,7 +1,7 @@
 package crawler
 
 import (
-	"testing"
+  "testing"
   "github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +28,7 @@ func TestGetUnparsedPages(t *testing.T) {
   page2 := sitemap.getPage("test2")
 
   assert.Subset(t, sitemap.getUnparsedPages(), []*page{page1, page2})
-	assert.Subset(t, []*page{page1, page2}, sitemap.getUnparsedPages())
+  assert.Subset(t, []*page{page1, page2}, sitemap.getUnparsedPages())
   page1.setParsed()
   assert.Equal(t, sitemap.getUnparsedPages(), []*page{page2})
   page2.setParsed()

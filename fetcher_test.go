@@ -1,7 +1,7 @@
 package crawler
 
 import (
-	"testing"
+  "testing"
   "net/http"
   "github.com/stretchr/testify/assert"
   "gopkg.in/h2non/gock.v1"

@@ -1,9 +1,9 @@
 package crawler
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+  "fmt"
+  "log"
+  "net/http"
   "strconv"
 )
 
@@ -18,9 +18,9 @@ func NewServer(c *Crawler) *Server {
 }
 
 func (s *Server) handler() func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+  return func(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html")
-  	w.WriteHeader(http.StatusOK)
+    w.WriteHeader(http.StatusOK)
 
     s.sitemap.Lock()
     data := s.sitemap.toJson()
@@ -32,6 +32,6 @@ func (s *Server) handler() func(http.ResponseWriter, *http.Request) {
 }
 
 func (s *Server) ServerListenPathPort(path string, port int) {
-	http.HandleFunc(path, s.handler())
-	log.Fatal(http.ListenAndServe(":" +  strconv.Itoa(port), nil))
+  http.HandleFunc(path, s.handler())
+  log.Fatal(http.ListenAndServe(":" +  strconv.Itoa(port), nil))
 }
