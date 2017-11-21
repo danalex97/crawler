@@ -5,6 +5,7 @@ import (
   "net/http"
   "github.com/stretchr/testify/assert"
   "gopkg.in/h2non/gock.v1"
+  "fmt"
 )
 
 func TestHttpFetcherGivesAListOfLinksForWellFormatedInput(t *testing.T) {
@@ -15,8 +16,10 @@ func TestHttpFetcherGivesAListOfLinksForWellFormatedInput(t *testing.T) {
     Reply(200).
     BodyString("<htl><a href=\"test\"><p><a href=\"test2\"></html>")
 
-  fetcher := newHttpFetcher("http://foo.com/bar", http.Client{})
-  assert.Equal(t, fetcher.fetch(), toFetchedData("http://foo.com/bar", []string{"test", "test2"}, nil))
+  fetcher  := newHttpFetcher("http://foo.com/bar", http.Client{})
+  expected := toFetchedData("http://foo.com/bar", []string{"test", "test2"}, []string{}, nil)
+  fmt.Println(expected)
+  assert.Equal(t, fetcher.fetch(), expected)
 }
 
 func TestHttpFetcherGivesNothingBackForBadFormatedInput(t *testing.T) {
@@ -28,7 +31,8 @@ func TestHttpFetcherGivesNothingBackForBadFormatedInput(t *testing.T) {
     BodyString("<htl><a hef=\"test\"><p><a hef=\"test2\"></html>")
 
   fetcher := newHttpFetcher("http://foo.com/bar", http.Client{})
-  assert.Equal(t, fetcher.fetch(), toFetchedData("http://foo.com/bar", []string{}, nil))
+  assert.Equal(t, fetcher.fetch(),
+    toFetchedData("http://foo.com/bar", []string{}, []string{}, nil))
 }
 
 func TestHttpFetcherGivesErrorFor404Response(t *testing.T) {
@@ -39,7 +43,7 @@ func TestHttpFetcherGivesErrorFor404Response(t *testing.T) {
     Reply(404)
 
   fetcher   := newHttpFetcher("http://foo.com/bar", http.Client{})
-  fetchData := toFetchedData("http://foo.com/bar", []string{}, nil)
+  fetchData := toFetchedData("http://foo.com/bar", []string{}, []string{}, nil)
   assert.Equal(t, fetcher.fetch().url, fetchData.url)
   assert.Equal(t, fetcher.fetch().urls, fetchData.urls)
 }

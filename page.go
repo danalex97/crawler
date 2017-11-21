@@ -6,6 +6,7 @@ type page struct {
   url    string
   parsed bool
   links  map[string]* page
+  assets []string
 }
 
 func newPage(url string) *page {
@@ -14,8 +15,15 @@ func newPage(url string) *page {
   p.url   = url
   p.links = make(map[string] *page)
   p.parsed = false
+  p.assets = []string{}
 
   return p
+}
+
+func (p *page) addAssets(assets []string) {
+  for _, asset := range assets{
+    p.assets = append(p.assets, asset)
+  }
 }
 
 func (p *page) addLink(link *page) {

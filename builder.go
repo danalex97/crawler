@@ -45,7 +45,7 @@ func (b *Builder) filterPages(urls []string) (filtered []string) {
   return
 }
 
-func (b *Builder) buildPage(url string, urls []string) []string {
+func (b *Builder) buildPage(url string, urls []string, assets []string) []string {
   b.sitemap.Lock()
   defer b.sitemap.Unlock()
 
@@ -61,6 +61,7 @@ func (b *Builder) buildPage(url string, urls []string) []string {
     page.addLink(target)
   }
   page.setParsed()
+  page.addAssets(assets)
 
   return newPages
 }

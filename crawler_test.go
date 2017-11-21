@@ -10,7 +10,7 @@ type mockFectcher struct {
 }
 
 func (f *mockFectcher) fetch() fetchedData {
-  return toFetchedData("test", []string {"test/url1", "tst/url2"}, nil)
+  return toFetchedData("test", []string {"test/url1", "tst/url2"}, []string{}, nil)
 }
 
 func testCrawler() *Crawler {
@@ -34,9 +34,9 @@ func TestFetchingPagesAddsAllTheFetcherDataToChannel(t *testing.T) {
 func TestBuildPagesReturnsArraysOfFilteredUrlsAndErrorsAreIgnored(t *testing.T) {
   fetchedChannel := make(chan fetchedData, 3)
 
-  fetchedChannel <- toFetchedData("test", []string {"test/url1", "tst/url2"}, nil)
-  fetchedChannel <- toFetchedData("test", nil, errors.New("test error"))
-  fetchedChannel <- toFetchedData("test", []string {"test/url1", "test/url2"}, nil)
+  fetchedChannel <- toFetchedData("test", []string {"test/url1", "tst/url2"}, []string{}, nil)
+  fetchedChannel <- toFetchedData("test", nil, []string{}, errors.New("test error"))
+  fetchedChannel <- toFetchedData("test", []string {"test/url1", "test/url2"}, []string{}, nil)
 
   crawler := testCrawler()
   buildingChannel := crawler.buildPages(fetchedChannel)
@@ -46,7 +46,7 @@ func TestBuildPagesReturnsArraysOfFilteredUrlsAndErrorsAreIgnored(t *testing.T) 
 
 func TestBuildPagesBuildsAPageAndFiltersItsLinks(t *testing.T) {
   fetchedChannel := make(chan fetchedData, 1)
-  fetchedChannel <- toFetchedData("test", []string {"test/url1", "tst/url2"}, nil)
+  fetchedChannel <- toFetchedData("test", []string {"test/url1", "tst/url2"}, []string{}, nil)
 
   crawler := NewCrawler("test")
   crawler.fetchers = []fetcher {&mockFectcher{}}

@@ -68,7 +68,7 @@ func TestBuildPageAddsAllLinks(t *testing.T) {
   }
 
   pageUrl := "test/page"
-  builder.buildPage(pageUrl, pages)
+  builder.buildPage(pageUrl, pages, []string{})
   page := sitemap.getPage(pageUrl)
   assert.Equal(t, page.getUrl(), pageUrl)
   assert.Equal(t, len(page.getLinks()), 3)
@@ -92,9 +92,9 @@ func TestBuildPageFiltersOutParsedPages(t *testing.T) {
   sitemap.getPage("test/p4").setParsed()
 
   pageUrl := "test/page"
-  builder.buildPage(pageUrl, pages)
+  builder.buildPage(pageUrl, pages, []string{})
 
-  assert.Equal(t, builder.buildPage(pageUrl, pages), []string{
+  assert.Equal(t, builder.buildPage(pageUrl, pages, []string{}), []string{
     "test/p1",
     "test/p2",
     "test/p3",

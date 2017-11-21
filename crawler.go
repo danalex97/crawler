@@ -41,8 +41,8 @@ func (c *Crawler) buildPages(fetchingChannel chan fetchedData) chan []string {
   lenFetchers     := len(c.fetchers)
 
   for i := 0; i < lenFetchers; i++ {
-    data           := <- fetchingChannel
-    url, urls, err := fromFetchedData(data)
+    data                   := <- fetchingChannel
+    url, urls, assets, err := fromFetchedData(data)
 
     if err != nil {
       continue
@@ -50,7 +50,7 @@ func (c *Crawler) buildPages(fetchingChannel chan fetchedData) chan []string {
 
     go func() {
       builder := newBuilder(c.domain, c.sitemap)
-      buildingChannel <- builder.buildPage(url, builder.filterPages(urls))
+      buildingChannel <- builder.buildPage(url, builder.filterPages(urls), assets)
     } ()
   }
   return buildingChannel

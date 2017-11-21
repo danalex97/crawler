@@ -27,7 +27,7 @@ func getElement(token html.Token, element string) (ok bool, href string) {
 
    This can be extended to processing static resources or other tags.
  */
-func (p *parser) parse() (urls []string) {
+func (p *parser) parse() (urls []string, assets []string) {
   tokenizer := html.NewTokenizer(p.reader)
   for {
     token := tokenizer.Next()
@@ -37,11 +37,18 @@ func (p *parser) parse() (urls []string) {
     case token == html.StartTagToken:
       token := tokenizer.Token()
 
-      // We found start of <a> tag
-      if token.Data == "a" {
-        ok, url := getElement(token, "href")
-        if ok {
+      switch token.Data {
+      case "a":
+        if ok, url := getElement(token, "href"); ok {
           urls = append(urls, url)
+        }
+      case "link":
+        if ok, url := getElement(token, "href"); ok {
+          assets = append(assets, url)
+        }
+      case "img", "script":
+        if ok, url := getElement(token, "src"); ok {
+          assets = append(assets, url)
         }
       }
     }

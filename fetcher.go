@@ -29,16 +29,21 @@ func (f *httpFetcher) fetch() fetchedData {
 
   resp, err := f.client.Get(f.url)
   if err != nil {
-    return toFetchedData(f.url, []string{}, err)
+    return toFetchedData(f.url, []string{}, []string{}, err)
   }
 
   // Even though resp.Body returns a ReadCloser, we can cast it to Reader
-  parser := newParser(f.url, resp.Body)
-  urls   := parser.parse()
+  parser       := newParser(f.url, resp.Body)
+  urls, assets := parser.parse()
+
+  fmt.Printf("Found %v assets for page %v\n", len(assets), f.url)
 
   if urls == nil {
-    return toFetchedData(f.url, []string{}, nil)
+    urls = []string{}
+  }
+  if assets == nil {
+    assets = []string{}
   }
 
-  return toFetchedData(f.url, urls[:], nil)
+  return toFetchedData(f.url, urls, assets, nil)
 }
